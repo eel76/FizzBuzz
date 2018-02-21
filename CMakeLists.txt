@@ -11,6 +11,11 @@ add_executable (
 
 file (DOWNLOAD https://github.com/catchorg/Catch2/releases/download/v2.1.1/catch.hpp "${CMAKE_CURRENT_BINARY_DIR}/include/catch.hpp")
 
+target_compile_options (
+  ${PROJECT_NAME}
+  PRIVATE -std:c++latest
+  )
+
 target_include_directories (
   ${PROJECT_NAME}
   PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include"
