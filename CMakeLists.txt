@@ -1,11 +1,11 @@
 cmake_minimum_required (VERSION 3.9)
 
 project (FizzBuzz CXX)
-set (CMAKE_CXX_STANDARD 17)
 
 add_executable (
   ${PROJECT_NAME}
   main.cpp
+  game.h
   # Readme.md
   )
 
@@ -13,7 +13,8 @@ file (DOWNLOAD https://github.com/catchorg/Catch2/releases/download/v2.1.1/catch
 
 target_compile_options (
   ${PROJECT_NAME}
-  PRIVATE -std:c++latest
+  PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-std:c++latest>
+  PRIVATE $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-std:c++17>
   )
 
 target_include_directories (

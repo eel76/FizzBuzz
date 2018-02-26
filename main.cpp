@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#include "game.h"
+
 #include <algorithm>
 #include <functional>
 #include <numeric>
@@ -9,8 +11,6 @@
 #include <vector>
 
 using namespace std::string_literals;
-
-using OptionalText = std::optional<std::string>;
 
 template <class T>
 using Rule = std::function<std::string(std::string, T)>;
@@ -26,43 +26,6 @@ auto multiple(int factor, std::string text)
     auto mapping = std::map<bool, std::string>{ { true, text } };
     return output + mapping[is_multiple_of(factor)(value)];
   }};
-}
-
-auto fizz()
-{
-  return multiple(3, "Fizz"s);
-}
-
-auto buzz()
-{
-  return multiple(5, "Buzz"s);
-}
-
-template <class T>
-auto operator + (Rule<T> const& lhs, Rule<T> const& rhs)
-{
-  return Rule<T> {[=](auto output, auto value) {
-    return rhs(lhs(output, value), value);
-  }};
-}
-
-template <class T>
-auto compile(Rule<T> rule)
-{
-  return [=](auto value) {
-    return rule(""s, value);
-  };
-}
-
-auto fizzBuzz()
-{
-  return compile(fizz() + buzz());
-}
-
-template <class T>
-auto fizzBuzz(T value)
-{
-  return fizzBuzz()(value);
 }
 
 namespace range
@@ -99,13 +62,13 @@ TEST_CASE("Fizz is equivalent to a multiple of 3") {
 
   // ints() | multiplyWith(3) | delimit (99)
   for (auto const value : range::ints(100))
-    CHECK(oneMatch(fizzBuzz(value), "Fizz"s) == is_multiple_of(3)(value));
+    CHECK(oneMatch(game::fizzBuzz(value), "Fizz"s) == is_multiple_of(3)(value));
 }
 
 TEST_CASE("Buzz is equivalent to a multiple of 5") {
 
   for (auto const value : range::ints(100))
-    CHECK(oneMatch(fizzBuzz(value), "Buzz"s) == is_multiple_of(5)(value));
+    CHECK(oneMatch(game::fizzBuzz(value), "Buzz"s) == is_multiple_of(5)(value));
 }
 
 TEST_CASE("Fizz appears before Buzz") {
