@@ -47,21 +47,31 @@ auto oneMatch(std::string const& text, std::string pattern)
   return count(text, pattern) == 1;
 }
 
+auto add(int offset)
+{
+  return [=](auto value) { return value + offset; };
+}
+
+auto multiply(int factor)
+{
+  return [=](auto value) { return value * factor; };
+}
+
 TEST_CASE("Fizz is equivalent to a multiple of 3") {
 
-  //range::ints()
-  //  >> [](auto value) { return value + 1; }
-  //  >> [](auto value) { return value * 3; }
-  //  >> filter ()
-  // ints() | multiplyWith(3) | delimit (99)
+  auto const fizz_buzz = fizz_buzz::game();
+
+  // range::ints() | add (1) | multiply (3) | delimit (99)
   for (auto const value : range::ints(100))
-    CHECK(oneMatch(game::fizzBuzz(value), "Fizz"s) == is_multiple_of(3)(value));
+    CHECK(oneMatch(fizz_buzz(value), "Fizz"s) == is_multiple_of(3)(value));
 }
 
 TEST_CASE("Buzz is equivalent to a multiple of 5") {
 
+  auto const fizz_buzz = fizz_buzz::game();
+
   for (auto const value : range::ints(100))
-    CHECK(oneMatch(game::fizzBuzz(value), "Buzz"s) == is_multiple_of(5)(value));
+    CHECK(oneMatch(fizz_buzz(value), "Buzz"s) == is_multiple_of(5)(value));
 }
 
 TEST_CASE("Fizz appears before Buzz") {
