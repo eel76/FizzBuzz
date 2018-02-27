@@ -2,36 +2,38 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <utility>
 
 namespace game
 {
   using match = std::map<bool, std::string>;
 
-  auto fizzText()
+  auto count(std::string text, std::string pattern, size_t pos = 0)
   {
-    using namespace std::string_literals;
-    return "Fizz"s;
+    auto const matchingPos = text.find(pattern, pos);
+    if (matchingPos == std::string::npos)
+      return 0;
+
+    return 1 + count(text, pattern, matchingPos + 1);
   }
 
-  auto buzzText()
+  auto contains(std::string text, std::string pattern)
   {
-    using namespace std::string_literals;
-    return "Buzz"s;
+    return count(text, pattern) >= 1;
   }
 
-  auto fizzRule(std::string value, int number)
+  auto is_multiple_of(int number)
   {
-    return value + match{ { false, fizzText () } }[number % 3];
+    return [=](auto value) {
+      return (value % number) == 0;
+    };
   }
 
-  auto buzzRule(std::string value, int number)
+  auto operator"" _if(char const* text, size_t)
   {
-    return value + match{ { false, buzzText() } }[number % 5];
-  }
-
-  auto toStringRule(std::string value, int number)
-  {
-    return match{ { false, value },{ true, std::to_string(number) } }[value.empty()];
+    return [=](bool condition) {
+      return match{ { true, std::string{ text } } }[condition];
+    };
   }
 
   template <class... Rules>
@@ -45,17 +47,54 @@ namespace game
 
   inline namespace version1
   {
+    auto fizzRule()
+    {
+      return [](auto result, int number) {
+        return result + "Fizz"_if(is_multiple_of(3)(number));
+      };
+    }
+
+    auto buzzRule()
+    {
+      return [](auto result, int number) {
+        return result + "Buzz"_if(is_multiple_of(5)(number));
+      };
+    }
+
+    auto toStringRule()
+    {
+      return [](auto result, int number) {
+        return match{ { false, result },{ true, std::to_string(number) } }[result.empty()];
+      };
+    }
+
     auto fizzBuzz(int number)
     {
-      return std::invoke(compile(&fizzRule, &buzzRule, &toStringRule), number);
+      return std::invoke(compile(fizzRule(), buzzRule (), toStringRule ()), number);
     }
   }
 
   namespace version2
   {
+    auto fizzRule()
+    {
+      return [](auto result, int number) {
+        return result + "Fizz"_if(is_multiple_of(3)(number) || contains(std::to_string(number), std::to_string(3)));
+      };
+    }
+
+    auto buzzRule()
+    {
+      return [](auto result, int number) {
+        return result + "Buzz"_if(is_multiple_of(5)(number) || contains(std::to_string(number), std::to_string(5)));
+      };
+    }
+
+    using version1::toStringRule;
+
     auto fizzBuzz(int number)
     {
-      return std::invoke(compile(&fizzRule, &buzzRule, &toStringRule), number);
+      return std::invoke(compile(fizzRule(), buzzRule(), toStringRule()), number);
     }
   }
 }

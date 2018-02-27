@@ -12,20 +12,9 @@
 
 using namespace std::string_literals;
 
-template <class T>
-using Rule = std::function<std::string(std::string, T)>;
-
 auto is_multiple_of(int factor)
 {
   return [=](auto value) { return (value % factor) == 0; };
-}
-
-auto multiple(int factor, std::string text)
-{
-  return Rule<int> {[=](auto output, auto value) {
-    auto mapping = std::map<bool, std::string>{ { true, text } };
-    return output + mapping[is_multiple_of(factor)(value)];
-  }};
 }
 
 namespace range
