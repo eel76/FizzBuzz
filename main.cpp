@@ -49,6 +49,10 @@ auto oneMatch(std::string const& text, std::string pattern)
 
 TEST_CASE("Fizz is equivalent to a multiple of 3") {
 
+  //range::ints()
+  //  >> [](auto value) { return value + 1; }
+  //  >> [](auto value) { return value * 3; }
+  //  >> filter ()
   // ints() | multiplyWith(3) | delimit (99)
   for (auto const value : range::ints(100))
     CHECK(oneMatch(game::fizzBuzz(value), "Fizz"s) == is_multiple_of(3)(value));
