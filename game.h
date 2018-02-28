@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <map>
 #include <string>
 
 namespace fizz_buzz
@@ -18,7 +19,7 @@ namespace fizz_buzz
       constexpr auto operator "" _if_(char const* text, size_t)
       {
         return [=](bool condition) {
-          return condition ? std::string{ text } : std::string{ };
+          return std::string{ condition ? text : "" };
         };
       }
     }
@@ -51,10 +52,7 @@ namespace fizz_buzz
       constexpr auto stringify()
       {
         return [](auto output, auto number) {
-          if (output.empty())
-            return std::to_string(number);
-
-          return output;
+          return output.empty() ? std::to_string(number) : output;
         };
       }
     }
