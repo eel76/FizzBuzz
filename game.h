@@ -6,10 +6,27 @@ namespace fizz_buzz
 {
   inline namespace version1
   {
+    inline namespace detail
+    {
+      constexpr auto is_multiple_of(int number)
+      {
+        return [=](auto value) {
+          return (value % number) == 0;
+        };
+      }
+
+      constexpr auto operator "" _if_(char const* text, size_t)
+      {
+        return [=](bool condition) {
+          return condition ? std::string{ text } : std::string{ };
+        };
+      }
+    }
+
     namespace rules
     {
       template <class... Rules>
-      auto compile(Rules&&... rules)
+      constexpr auto combine(Rules&&... rules)
       {
         return[=](auto number) {
           auto value = std::string{};
@@ -17,48 +34,35 @@ namespace fizz_buzz
         };
       }
 
-      auto is_multiple_of(int number)
+      constexpr auto fizz()
       {
-        return [=](auto value) {
-          return (value % number) == 0;
+        return [](auto output, auto number) {
+          return output + "Fizz"_if_(is_multiple_of(3)(number));
         };
       }
 
-      auto fizz()
+      constexpr auto buzz()
       {
-        return [](auto result, auto number) {
-          if (is_multiple_of(3)(number))
-            return result + std::string{ "Fizz" };
-
-          return result;
+        return [](auto output, auto number) {
+          return output + "Buzz"_if_(is_multiple_of(5)(number));
         };
       }
 
-      auto buzz()
+      constexpr auto stringify()
       {
-        return [](auto result, auto number) {
-          if (is_multiple_of(5)(number))
-            return result + std::string{ "Buzz" };
-
-          return result;
-        };
-      }
-
-      auto stringify()
-      {
-        return [](auto result, auto number) {
-          if (result.empty())
+        return [](auto output, auto number) {
+          if (output.empty())
             return std::to_string(number);
 
-          return result;
+          return output;
         };
       }
     }
 
-    auto game()
+    constexpr auto game()
     {
       using namespace rules;
-      return compile(fizz(), buzz(), stringify());
+      return combine(fizz(), buzz(), stringify());
     }
   }
 }
