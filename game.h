@@ -18,7 +18,7 @@ namespace fizz_buzz
 
       constexpr auto operator "" _if_(char const* text, size_t)
       {
-        return [=](bool condition) {
+        return [=](auto condition) {
           return std::string{ condition ? text : "" };
         };
       }
