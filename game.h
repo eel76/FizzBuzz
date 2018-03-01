@@ -29,9 +29,8 @@ namespace fizz_buzz
       template <class... Rules>
       constexpr auto combine(Rules&&... rules)
       {
-        return[=](auto number) {
-          auto value = std::string{};
-          return ((value = std::invoke(rules, value, number)), ...);
+        return[=](auto output, auto number) {
+          return ((output = std::invoke(rules, output, number)), ...);
         };
       }
 
@@ -60,7 +59,11 @@ namespace fizz_buzz
     constexpr auto game()
     {
       using namespace rules;
-      return combine(fizz(), buzz(), stringify());
+
+      auto const all_rules = combine(fizz(), buzz(), stringify());
+      return[=](auto number) {
+        return all_rules (std::string{}, number);
+      };
     }
   }
 }
