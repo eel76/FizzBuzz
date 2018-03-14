@@ -1,9 +1,10 @@
 
+include (../Modules/gtest.cmake)
+
 add_executable (
-  ChristmasTree
-  main.cpp
+  ChristmasTree main.cpp
   )
 
 target_link_libraries (
-  ChristmasTree PRIVATE Catch
+  ChristmasTree PRIVATE gtest
   )

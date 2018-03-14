@@ -1,7 +1,8 @@
-﻿#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+﻿#include "gtest/gtest.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace christmas_tree
 {
@@ -12,7 +13,7 @@ namespace christmas_tree
   auto combine(Images&&... images)
   {
     auto ret = Image{};
-    ((ret.insert (ret.end (), images.begin (), images.end ())), ...);
+    ((ret.insert(ret.end(), images.begin(), images.end())), ...);
     return ret;
   }
 
@@ -48,14 +49,19 @@ namespace christmas_tree
 
   auto draw(int height)
   {
-    return combine (needles(height), trunk(height));
+    return combine(needles(height), trunk(height));
   }
 }
 
-TEST_CASE("Print tree") {
+TEST(christmasTree, isPrintable) {
 
   auto const image = christmas_tree::draw(7);
 
   for (auto&& line : image)
     std::cout << line << '\n';
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
