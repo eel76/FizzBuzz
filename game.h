@@ -58,11 +58,9 @@ namespace fizz_buzz
 
     constexpr auto game()
     {
-      using namespace rules;
-
-      auto const all_rules = combine(fizz(), buzz(), stringify());
+      auto const all_rules = rules::combine(rules::fizz(), rules::buzz(), rules::stringify());
       return[=](auto number) {
-        return all_rules (std::string{}, number);
+        return all_rules(std::string{}, number);
       };
     }
   }

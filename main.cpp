@@ -8,28 +8,9 @@
 
 using namespace std::string_literals;
 
-auto is_multiple_of(int factor)
-{
-  return [=](auto value) { return (value % factor) == 0; };
-}
-
-auto count(std::string const& text, std::string pattern, size_t pos = 0)
-{
-  auto const matchingPos = text.find(pattern, pos);
-  if (matchingPos == std::string::npos)
-    return 0;
-
-  return 1 + count(text, pattern, matchingPos + 1);
-}
-
-auto oneMatch(std::string const& text, std::string pattern)
-{
-  return count(text, pattern) == 1;
-}
-
 TEST_CASE("Print all results") {
 
-  auto const fizz_buzz = fizz_buzz::game();
+  constexpr auto fizz_buzz = fizz_buzz::game();
 
   for (auto const value : range::ints(1, 100))
     std::cout << fizz_buzz(value) << '\n';
