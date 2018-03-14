@@ -1,27 +1,11 @@
 cmake_minimum_required (VERSION 3.9)
 
-project (FizzBuzz CXX)
+project (Katas CXX)
 set (CMAKE_CXX_STANDARD 17)
 
-add_executable (
-  ${PROJECT_NAME}
-  main.cpp
-  game.h
-  range.h
-  LICENSE
-  Readme.md
-  )
-
 file (DOWNLOAD https://github.com/catchorg/Catch2/releases/download/v2.1.1/catch.hpp "${CMAKE_CURRENT_BINARY_DIR}/include/catch.hpp")
+add_library(Catch INTERFACE)
+target_include_directories (Catch INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/include")
 
-# target_compile_options (
-#   ${PROJECT_NAME}
-#   # PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-std:c++latest>
-#   # PRIVATE $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-std:c++17>
-#   )
-
-target_include_directories (
-  ${PROJECT_NAME}
-  PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include"
-  )
-  
+add_subdirectory (FizzBuzz)
+add_subdirectory (ChristmasTree)
