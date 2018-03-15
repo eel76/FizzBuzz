@@ -1,10 +1,10 @@
 ﻿#include "gtest/gtest.h"
 
+#include <functional>
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
-#include <functional>
 
 namespace christmas_tree
 {
@@ -35,7 +35,7 @@ namespace christmas_tree
   auto indent(Image image, std::string s)
   {
     for (auto& line : image)
-      line = s + line;
+      line = s + line + s;
 
     return image;
   }
@@ -47,26 +47,31 @@ namespace christmas_tree
 
   using Images = std::map<int, Image>;
 
-  auto needles(int height)
+  auto operator <= (std::string line, int heigth)
+  {
+    return std::pair<int, Image> { heigth, Image{line} };
+  }
+
+  auto treetop(int height)
   {
     if (height <= 1)
-      return Images{ { 1, Image{ "X"s } } }[height];
+      return Images{ "X"s <= 1 }[height];
 
-    auto smaller = needles(height - 1);
-    return indent (smaller, " "s) + Image { "X"s + bottom (smaller) + "X"s };
+    auto const tree = treetop(height - 1);
+    return indent (tree, " "s) + Image { "X"s + bottom (tree) + "X"s };
   }
 
   auto trunk(int height)
   {
     if (height <= 1)
-      return Images{ { 1, Image { "I"s } } }[height];
+      return Images{ "I"s <= 1 }[height];
 
     return Image{ " "s + trunk(height - 1).back() };
   }
 
   auto draw(int height)
   {
-    return needles(height) + trunk(height);
+    return treetop(height) + trunk(height);
   }
 }
 
