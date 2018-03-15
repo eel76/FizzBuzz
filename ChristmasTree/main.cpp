@@ -1,55 +1,72 @@
 ﻿#include "gtest/gtest.h"
 
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace christmas_tree
 {
   using namespace std::string_literals;
   using Image = std::vector<std::string>;
 
-  template <class... Images>
-  auto combine(Images&&... images)
+  auto operator + (Image a, Image b)
   {
-    auto ret = Image{};
-    ((ret.insert(ret.end(), images.begin(), images.end())), ...);
-    return ret;
+    a.insert(end(a), cbegin(b), cend(b));
+    return a;
   }
+
+  //using Transform = std::function<std::string(std::string)>;
+
+  //auto operator | (Image image, Transform transform)
+  //{
+  //  for (auto& line : image)
+  //    line = transform(line);
+
+  //  return image;
+  //}
+
+  //auto indent(std::string s)
+  //{
+  //  return Transform{ [=](auto line) { return s + line; } };
+  //}
+
+  auto indent(Image image, std::string s)
+  {
+    for (auto& line : image)
+      line = s + line;
+
+    return image;
+  }
+
+  auto bottom(Image image)
+  {
+    return image.back();
+  }
+
+  using Images = std::map<int, Image>;
 
   auto needles(int height)
   {
-    if (height <= 0)
-      return Image{};
+    if (height <= 1)
+      return Images{ { 1, Image{ "X"s } } }[height];
 
-    if (height == 1)
-      return Image{ "X"s };
-
-    auto const image = needles(height - 1);
-
-    auto newImage = Image{};
-    newImage.emplace_back(" "s + image.front());
-
-    for (auto const& needles : image)
-      newImage.emplace_back(needles + "XX"s);
-
-    return newImage;
+    auto smaller = needles(height - 1);
+    return indent (smaller, " "s) + Image { "X"s + bottom (smaller) + "X"s };
   }
 
   auto trunk(int height)
   {
-    if (height <= 0)
-      return Image{};
-
-    if (height == 1)
-      return Image{ "I"s };
+    if (height <= 1)
+      return Images{ { 1, Image { "I"s } } }[height];
 
     return Image{ " "s + trunk(height - 1).back() };
   }
 
   auto draw(int height)
   {
-    return combine(needles(height), trunk(height));
+    return needles(height) + trunk(height);
   }
 }
 

@@ -6,6 +6,9 @@ include (ExternalProject)
 
 ExternalProject_Add (gtest-build
   GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.8.0
+  GIT_PROGRESS true
+  GIT_SHALLOW true
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/googletest
   UPDATE_COMMAND ""
   CMAKE_ARGS -Dgtest_force_shared_crt=ON "-DCMAKE_DEBUG_POSTFIX="
