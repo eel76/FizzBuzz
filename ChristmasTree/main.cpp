@@ -5,23 +5,23 @@
 
 namespace christmas_tree
 {
-  auto needle()
-  {
-    return std::string{ "X" };
-  }
-
   auto wood()
   {
     return std::string{ "I" };
   }
 
+  auto needles()
+  {
+    return std::string{ "X" };
+  }
+
   auto treetop(int height)
   {
     if (height <= 1)
-      return catalog(1, Image{ needle () })[height];
+      return catalog(1, Image{ needles () })[height];
 
     auto const tree = treetop(height - 1);
-    return indent (tree) + Image { needle () + bottom (tree) + needle () };
+    return indent (tree) + Image { needles () + bottom (tree) + needles () };
   }
 
   auto trunk(int height)
