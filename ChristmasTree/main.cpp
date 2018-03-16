@@ -61,7 +61,7 @@ namespace christmas_tree
     if (height <= 1)
       return Images{ { 1, Image { "I"s } } }[height];
 
-    return Image{ " "s + trunk(height - 1).back() };
+    return indent (trunk(height - 1), " "s);
   }
 
   auto draw(int height)
